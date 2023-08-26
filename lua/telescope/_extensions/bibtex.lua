@@ -65,6 +65,7 @@ end
 local function bibtex_picker(opts)
   opts = opts or {}
   local results = get_picker_entries()
+  local format_string = utils.get_format_string()
   pickers
     .new(opts, {
       prompt_title = "Bibtex References",
@@ -106,7 +107,7 @@ local function bibtex_picker(opts)
       }),
       sorter = conf.generic_sorter(opts),
       attach_mappings = function(_, map)
-        actions.select_default:replace(mappings.key_append)
+        actions.select_default:replace(mappings.key_append(format_string))
         map("i", BibtexCfg.mappings.entry_append, mappings.entry_append)
         map("i", BibtexCfg.mappings.citation_append, mappings.citation_append)
         map("i", BibtexCfg.mappings.field_append, mappings.field_append(opts))

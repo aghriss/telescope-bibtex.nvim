@@ -36,7 +36,6 @@ M.abbrev_authors = function(parsed)
   return shortened
 end
 
-
 -- Replace escaped accents by proper UTF-8 char
 M.clean_accents = function(str)
   local mappingTable = require("bibtex.accents")
@@ -117,6 +116,22 @@ M.get_bibkeys = function(parsed_entry)
     table.insert(bibkeys, key)
   end
   return bibkeys
+end
+
+M.get_format_string = function()
+  if BibtexCfg.format ~= nil then
+    return BibtexCfg.formats[BibtexCfg.format]
+  end
+  if BibtexCfg.use_auto_format then
+    local format_string = BibtexCfg.formats[vim.o.filetype]
+    if format_string ~= nil then
+      return format_string
+    end
+    if vim.bo.filetype:match("markdown%.%a+") then
+      return BibtexCfg.formats["markdown"]
+    end
+  end
+  return BibtexCfg.formats[BibtexCfg.fallback_format]
 end
 
 -- Replace string by initials of each word

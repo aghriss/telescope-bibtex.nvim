@@ -18,7 +18,7 @@ if not BibtexCfg then
       plain = "%s",
     },
     fallback_format = "plain",
-    use_auto_format = false,
+    use_auto_format = true,
     context = true,
     mappings = {
       entry_append = "<c-e>",

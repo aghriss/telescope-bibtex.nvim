@@ -68,7 +68,9 @@ M.parse_pandoc = function()
     elseif line:find(bib_yaml) then
       local bib = line:match(bib_yaml .. " (.+)")
       if bib then
-        for _, entry in ipairs(utils.split_str(bib:gsub("%[", ""):gsub("%]", ""), ",")) do
+        for _, entry in
+          ipairs(utils.split_str(bib:gsub("%[", ""):gsub("%]", ""), ","))
+        do
           table.insert(bibs, utils.trim_whitespace(entry))
         end
       end

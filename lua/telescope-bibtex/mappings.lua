@@ -8,18 +8,18 @@ local utils = require("telescope-bibtex.utils")
 
 local M = {}
 
-M.key_append = function(prompt_bufnr)
-  local mode = vim.api.nvim_get_mode().mode
-  local entry = string.format(
-    BibtexCfg.format_string,
-    action_state.get_selected_entry().id.name
-  )
-  actions.close(prompt_bufnr)
-  if mode == "i" then
-    vim.api.nvim_put({ entry }, "", false, true)
-    vim.api.nvim_feedkeys("a", "n", true)
-  else
-    vim.api.nvim_put({ entry }, "", true, true)
+M.key_append = function(format_string)
+  return function(prompt_bufnr)
+    local mode = vim.api.nvim_get_mode().mode
+    local entry =
+      string.format(format_string, action_state.get_selected_entry().id.name)
+    actions.close(prompt_bufnr)
+    if mode == "i" then
+      vim.api.nvim_put({ entry }, "", false, true)
+      vim.api.nvim_feedkeys("a", "n", true)
+    else
+      vim.api.nvim_put({ entry }, "", true, true)
+    end
   end
 end
 
