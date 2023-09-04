@@ -12,7 +12,7 @@ M.key_append = function(format_string)
   return function(prompt_bufnr)
     local mode = vim.api.nvim_get_mode().mode
     local entry =
-      string.format(format_string, action_state.get_selected_entry().id.name)
+      string.format(format_string, action_state.get_selected_entry().entry.label)
     actions.close(prompt_bufnr)
     if mode == "i" then
       vim.api.nvim_put({ entry }, "", false, true)
@@ -24,23 +24,26 @@ M.key_append = function(format_string)
 end
 
 M.entry_append = function(prompt_bufnr)
-  local entry = action_state.get_selected_entry().id.content
+  -- P({ "get_selected_entry", action_state.get_selected_entry() })
+  local content = action_state.get_selected_entry().entry.raw
+  -- P({ "get_selected_entry.content", content })
+  content = utils.split_str(content, "\n")
+  -- P({ "get_selected_entry.content", content })
   actions.close(prompt_bufnr)
   local mode = vim.api.nvim_get_mode().mode
   if mode == "i" then
-    vim.api.nvim_put(entry, "", false, true)
+    vim.api.nvim_put(content, "", false, true)
     vim.api.nvim_feedkeys("a", "n", true)
   else
-    vim.api.nvim_put(entry, "", true, true)
+    vim.api.nvim_put(content, "", true, true)
   end
 end
 
-M.field_append = function(prompt_bufnr, opts)
-  return function()
-    local bib_entry = action_state.get_selected_entry().id.content
+M.field_append = function(opts)
+  return function(prompt_bufnr)
+    local parsed = action_state.get_selected_entry().entry.content
+    -- local parsed = utils.parse_raw_entry(bib_entry)
     actions.close(prompt_bufnr)
-
-    local parsed = utils.parse_entry(bib_entry)
     pickers
       .new(opts, {
         prompt_title = "Bibtex fields",
@@ -79,17 +82,28 @@ M.field_append = function(prompt_bufnr, opts)
   end
 end
 
-M.citation_append = function(prompt_bufnr)
-  local entry = action_state.get_selected_entry().id.content
-  actions.close(prompt_bufnr)
-  local citation = utils.format_citation(entry)
-  local mode = vim.api.nvim_get_mode().mode
-  if mode == "i" then
-    vim.api.nvim_put(citation, "", false, true)
-    vim.api.nvim_feedkeys("a", "n", true)
-  else
-    vim.api.nvim_paste(citation, true, -1)
+M.citation_append = function(
+  citation_format,
+  citation_trim_firstname,
+  citation_max_author
+)
+  local map_function = function(prompt_bufnr)
+    local entry = action_state.get_selected_entry().entry.content
+    actions.close(prompt_bufnr)
+    local citation = utils.format_citation(
+      entry,
+      citation_format,
+      citation_trim_firstname,
+      citation_max_author
+    )
+    local mode = vim.api.nvim_get_mode().mode
+    if mode == "i" then
+      vim.api.nvim_put({ citation }, "", false, true)
+      vim.api.nvim_feedkeys("a", "n", true)
+    else
+      vim.api.nvim_paste(citation, true, -1)
+    end
   end
+  return map_function
 end
-
 return M
