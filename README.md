@@ -67,35 +67,47 @@ The default configuration for telescope-bibtex is:
 ```lua
 require"telescope".setup {
   ...
-
   extensions = {
     bibtex = {
-      -- Depth for the *.bib file
-      depth = 1,
-      -- Custom format for citation label
-      custom_formats = {},
-      -- Format to use for citation label.
-      -- Try to match the filetype by default, or use 'plain'
-      format = '',
-      -- Path to global bibliographies (placed outside of the project)
-      global_files = {},
-      -- Define the search keys to use in the picker
-      search_keys = { 'author', 'year', 'title' },
       -- Template for the formatted citation
-      citation_format = '{{author}} ({{year}}), {{title}}.',
+    citation_format = "{author} ({year}), {title}.",
       -- Only use initials for the authors first name
-      citation_trim_firstname = true,
+    citation_trim_firstname = true,
       -- Max number of authors to write in the formatted citation
       -- following authors will be replaced by "et al."
-      citation_max_auth = 2,
-      -- Context awareness disabled by default
-      context = false,
-      -- Fallback to global/directory .bib files if context not found
-      -- This setting has no effect if context = false
-      context_fallback = true,
-      -- Wrapping in the preview window is disabled by default
-      wrap = false,
+    citation_max_author = 2,
+      -- Define the search keys to use in the picker
+    search_keys = { "author", "year", "title" },
+    formats = {
+      tex = "\\cite{%s}",
+      md = "@%s",
+      markdown = "@%s",
+      rmd = "@%s",
+      quarto = "@%s",
+      pandoc = "@%s",
+      plain = "%s",
     },
+    -- Path to global bibliographies (placed outside of the project)
+    global_files = {},
+    -- Format to use for citation label.
+    -- Try to match the filetype by default, or use 'plain'
+    fallback_format = "plain",
+    -- use filetype format or default to fallback_format 
+    use_auto_format = true,
+    user_files = {},
+    -- Context awareness, include bibtex entries from \bibliography or /addbibresource
+    include_context = true,
+    -- Depth for the *.bib file
+    relative_depth = 1,
+    -- Wrapping in the preview window is disabled by default
+    wrap = false,
+    -- shortcuts
+    mappings = {
+      entry_append = "<c-e>",
+      citation_append = "<c-c>",
+      field_append = "<c-f>",
+      }
+    }
   }
 }
 ```
